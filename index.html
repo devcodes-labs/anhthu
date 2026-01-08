@@ -3,660 +3,831 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Filtered Visual Portfolio</title>
+    <title>Visual Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* --- 1. CSS VARIABLES --- */
+      /* --- 1. VARIABLES & RESET --- */
       :root {
-        --card-overlay: linear-gradient(
-          to top,
-          rgba(255, 255, 255, 0.95),
-          transparent
-        );
-        --accent-color: #0066cc;
-        --text-color: #1a1a1a;
-        --glass-bg: rgba(255, 255, 255, 0.8);
-        --glass-border: rgba(0, 0, 0, 0.1);
-        --bg-primary: #f5f7fa;
-        --bg-secondary: #ffffff;
+        --primary: #2d3436;
+        --secondary: #636e72;
+        --accent: #0984e3;
+        --bg-body: #f0f2f5;
+        --card-bg: rgba(255, 255, 255, 0.85);
+        --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+        --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.04);
+        --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.08);
+        --radius: 24px;
+        --font-main: "Inter", sans-serif;
+        --font-heading: "Playfair Display", serif;
       }
 
-      /* --- 2. BASE STYLES --- */
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: "Poppins", sans-serif;
         margin: 0;
-        padding: 0;
-        color: var(--text-color);
+        font-family: var(--font-main);
+        background-color: #fdfbf7;
+        /* Subtle mesh gradient background */
+        background-image: radial-gradient(
+            at 0% 0%,
+            hsla(253, 16%, 7%, 1) 0,
+            transparent 50%
+          ),
+          radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+          radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+        background-image: radial-gradient(
+            at 40% 20%,
+            hsla(28, 100%, 74%, 1) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 80% 0%,
+            hsla(189, 100%, 56%, 1) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 0% 50%,
+            hsla(355, 100%, 93%, 1) 0px,
+            transparent 50%
+          );
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        color: var(--primary);
+        line-height: 1.6;
         min-height: 100vh;
-        background: linear-gradient(
-          270deg,
-          #e3f2fd,
-          #f3e5f5,
-          #fce4ec,
-          #e8f5e9,
-          #fff3e0
-        );
-        background-size: 800% 800%;
-        animation: gradientFlow 30s ease infinite;
       }
 
-      header {
-        text-align: center;
-        padding: 4rem 1rem 2rem 1rem;
-      }
-
-      header h1 {
-        font-size: 3.5rem;
-        margin: 0;
-        background: linear-gradient(to right, #1a1a1a, var(--accent-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      header p {
-        color: #666;
-        margin-top: 10px;
-        font-weight: 300;
-      }
-
+      /* --- 2. LAYOUT UTILS --- */
       .container {
-        max-width: 1200px;
-        margin: 0 auto 4rem auto;
-        padding: 0 1.5rem;
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 2rem;
       }
 
-      /* --- 3. FILTER BUTTONS --- */
-      .filter-container {
+      .section-spacer {
+        padding: 6rem 0;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        margin-top: 0;
+        color: #1a1a1a;
+      }
+
+      p {
+        color: var(--secondary);
+      }
+
+      /* --- 3. PROFILE HEADER (HERO) --- */
+      .profile-hero {
+        padding-top: 4rem;
+        animation: fadeIn 0.8s ease-out;
+      }
+
+      .profile-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: var(--glass-border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-soft);
+        padding: 3rem;
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 4rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Decorative element behind profile */
+      .profile-card::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        filter: blur(60px);
+        z-index: -1;
+        opacity: 0.6;
+      }
+
+      .profile-left {
+        text-align: center;
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
+        padding-right: 3rem;
+      }
+
+      .avatar-container {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        padding: 6px;
+        background: #fff;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .avatar-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      .profile-name {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.5px;
+      }
+
+      .profile-role {
+        font-size: 1rem;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        display: block;
+      }
+
+      .contact-grid {
+        display: grid;
+        gap: 0.8rem;
+        text-align: left;
+        font-size: 0.9rem;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 1.5rem;
+        border-radius: 12px;
+      }
+
+      .contact-item {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        padding-bottom: 0.5rem;
+      }
+
+      .contact-item span:first-child {
+        font-weight: 500;
+        color: #888;
+      }
+
+      .profile-right {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .bio-section h3 {
+        font-size: 1.2rem;
+        border-bottom: 2px solid var(--accent);
+        display: inline-block;
+        padding-bottom: 5px;
+        margin-bottom: 1.5rem;
+      }
+
+      .grid-2-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+      }
+
+      /* --- 4. SKILLS & STATS --- */
+      .skills-container {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+
+      .skill-pill {
+        background: #fff;
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .skill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--accent);
+      }
+
+      /* --- 5. TIMELINE (Education/Exp) --- */
+      .timeline-item {
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-left: 1.5rem;
+        border-left: 2px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -5px;
+        top: 6px;
+        width: 8px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 50%;
+      }
+
+      .t-title {
+        font-weight: 700;
+        color: var(--primary);
+        display: block;
+      }
+      .t-place {
+        font-size: 0.9rem;
+        font-style: italic;
+        color: #666;
+      }
+      .t-date {
+        font-size: 0.8rem;
+        color: #999;
+        text-transform: uppercase;
+        margin-top: 2px;
+        display: block;
+      }
+
+      /* --- 6. PORTFOLIO GRID --- */
+      /* --- 6. PORTFOLIO GRID REFINED --- */
+      .portfolio-controls {
         display: flex;
         justify-content: center;
-        gap: 15px;
+        gap: 1rem;
         margin-bottom: 3rem;
         flex-wrap: wrap;
       }
 
       .filter-btn {
-        padding: 10px 25px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--glass-border);
-        color: #666;
-        border-radius: 30px;
+        background: transparent;
+        border: none;
+        padding: 0.8rem 1.5rem;
         cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: inherit;
-        font-size: 0.9rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        font-family: var(--font-main);
+        font-weight: 500;
+        color: #888;
+        transition: all 0.3s;
+        border-radius: 50px;
       }
 
-      .filter-btn:hover,
-      .filter-btn.active {
-        background: var(--accent-color);
-        color: #fff;
-        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+      .filter-btn.active,
+      .filter-btn:hover {
+        background: #fff;
+        color: var(--primary);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         font-weight: 600;
       }
 
-      /* --- 4. PORTFOLIO GRID --- */
-      .portfolio-grid {
+      .gallery-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2.5rem;
       }
 
       .project-card {
-        position: relative;
+        background: #fff;
         border-radius: 16px;
         overflow: hidden;
+        position: relative;
         cursor: pointer;
-        height: 300px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--glass-border);
-        transition: transform 0.4s ease, opacity 0.4s ease;
-        animation: fadeIn 0.5s ease forwards;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          box-shadow 0.4s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        height: 350px; /* Increased height slightly for text */
       }
 
       .project-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0, 102, 204, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
       }
 
       .project-card img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        transition: transform 0.6s ease;
       }
 
       .project-card:hover img {
         transform: scale(1.1);
       }
 
-      .card-overlay {
+      /* HOVER OVERLAY */
+      .project-overlay {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: var(--card-overlay);
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.85) 0%,
+          rgba(0, 0, 0, 0.4) 50%,
+          transparent 100%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         padding: 2rem;
-        box-sizing: border-box;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        color: #fff;
       }
 
-      .project-card:hover .card-overlay {
+      .project-card:hover .project-overlay {
         opacity: 1;
       }
 
-      .card-overlay h3 {
-        margin: 0;
-        color: var(--text-color);
-        transform: translateY(20px);
-        transition: 0.4s;
-      }
-
-      .card-overlay p {
-        color: #555;
-        font-size: 0.9rem;
-        transform: translateY(20px);
-        transition: 0.4s 0.1s;
-      }
-
-      .project-card:hover .card-overlay h3,
-      .project-card:hover .card-overlay p {
-        transform: translateY(0);
-      }
-
-      .category-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(4px);
-        padding: 5px 12px;
-        border-radius: 20px;
+      /* ANIMATED TEXT ELEMENTS */
+      .project-category {
         font-size: 0.7rem;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        color: var(--accent-color);
-        font-weight: 600;
+        letter-spacing: 2px;
+        color: var(--accent); /* Blue accent text */
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: 0.4s ease;
       }
 
-      .loading-message {
-        text-align: center;
-        padding: 3rem;
-        color: #666;
-        font-size: 1.1rem;
+      .project-title {
+        font-size: 1.5rem;
+        font-family: var(--font-heading);
+        margin: 0 0 0.5rem 0;
+        color: #fff;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: 0.4s ease;
+        transition-delay: 0.1s; /* Slight delay */
       }
 
-      /* --- 5. MODAL --- */
+      .project-desc {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+        line-height: 1.5;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: 0.4s ease;
+        transition-delay: 0.2s; /* More delay */
+      }
+
+      /* Trigger text animation on hover */
+      .project-card:hover .project-category,
+      .project-card:hover .project-title,
+      .project-card:hover .project-desc {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      /* --- 7. MODAL --- */
       .modal {
         display: none;
         position: fixed;
-        z-index: 2000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(8px);
-        justify-content: center;
+        z-index: 9999;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
         align-items: center;
-        flex-direction: column;
+        justify-content: center;
       }
 
       .modal-content {
+        max-width: 90vw;
+        max-height: 90vh;
         position: relative;
-        max-width: 90%;
-        max-height: 85vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        text-align: center;
       }
 
-      .slider-image {
+      .modal-img {
         max-width: 100%;
         max-height: 80vh;
         border-radius: 8px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        transition: opacity 0.3s;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
       }
 
-      .close-btn {
+      .close-modal {
         position: absolute;
         top: 20px;
-        right: 40px;
-        color: #1a1a1a;
-        font-size: 50px;
+        right: 30px;
+        font-size: 2rem;
         cursor: pointer;
-        transition: 0.3s;
-        line-height: 0.5;
+        color: #333;
+        transition: transform 0.2s;
+      }
+      .close-modal:hover {
+        transform: rotate(90deg);
+        color: var(--accent);
       }
 
-      .close-btn:hover {
-        color: var(--accent-color);
-      }
-
-      .nav-btn {
-        cursor: pointer;
+      .nav-arrow {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        width: 50px;
-        height: 50px;
-        color: #1a1a1a;
-        font-weight: bold;
-        font-size: 20px;
-        border-radius: 50%;
-        background-color: rgba(255, 255, 255, 0.9);
-        border: 1px solid var(--glass-border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.3s;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      .nav-btn:hover {
-        background-color: var(--accent-color);
-        color: #fff;
-      }
-
-      .prev {
-        left: -70px;
-      }
-      .next {
-        right: -70px;
-      }
-
-      @media (max-width: 768px) {
-        .prev {
-          left: 10px;
-        }
-        .next {
-          right: 10px;
-        }
-      }
-
-      .caption-container {
-        text-align: center;
-        margin-top: 15px;
-      }
-
-      .caption-container h3 {
-        color: var(--accent-color);
-        margin-bottom: 5px;
-      }
-
-      /* --- 6. CONTACT SECTION --- */
-      .contact-section {
-        max-width: 900px;
-        margin: 5rem auto 3rem auto;
-        padding: 3rem 2rem;
-        background: var(--bg-secondary);
-        border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        backdrop-filter: blur(12px);
-        text-align: center;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      }
-
-      .contact-section h2 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        background: linear-gradient(to right, #1a1a1a, var(--accent-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .contact-section p {
-        color: #666;
-        margin-bottom: 2rem;
-        font-weight: 300;
-      }
-
-      .contact-form {
-        display: grid;
-        gap: 1.2rem;
-      }
-
-      .form-group input,
-      .form-group textarea {
-        width: 100%;
-        padding: 14px 18px;
-        border-radius: 12px;
-        border: 1px solid var(--glass-border);
-        background: rgba(255, 255, 255, 0.8);
-        color: #1a1a1a;
-        font-family: inherit;
-        outline: none;
-        transition: 0.3s;
-      }
-
-      .form-group input::placeholder,
-      .form-group textarea::placeholder {
-        color: #999;
-      }
-
-      .form-group input:focus,
-      .form-group textarea:focus {
-        border-color: var(--accent-color);
-        box-shadow: 0 0 12px rgba(0, 102, 204, 0.2);
-      }
-
-      .submit-btn {
-        margin-top: 1rem;
-        padding: 14px 30px;
-        border-radius: 30px;
-        border: none;
-        background: var(--accent-color);
-        color: #fff;
-        font-weight: 600;
+        font-size: 2rem;
         cursor: pointer;
+        padding: 1rem;
+        color: #333;
+        opacity: 0.5;
         transition: 0.3s;
-        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+      }
+      .nav-arrow:hover {
+        opacity: 1;
+        color: var(--accent);
+      }
+      .nav-prev {
+        left: -60px;
+      }
+      .nav-next {
+        right: -60px;
       }
 
-      .submit-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+      /* --- 8. RESPONSIVE --- */
+      @media (max-width: 900px) {
+        .profile-card {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+          padding: 2rem;
+        }
+        .profile-left {
+          border-right: none;
+          border-bottom: 1px solid #eee;
+          padding-bottom: 2rem;
+          padding-right: 0;
+        }
+        .grid-2-col {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+        .nav-prev {
+          left: 10px;
+          background: rgba(255, 255, 255, 0.8);
+          border-radius: 50%;
+        }
+        .nav-next {
+          right: 10px;
+          background: rgba(255, 255, 255, 0.8);
+          border-radius: 50%;
+        }
       }
 
-      /* --- ANIMATIONS --- */
       @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(10px);
+          transform: translateY(20px);
         }
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
-
-      @keyframes gradientFlow {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
     </style>
   </head>
   <body>
-    <header>
-      <h1>DESIGN</h1>
-      <p>Full Stack Developer & Visual Designer</p>
-    </header>
+    <section class="profile-hero container">
+      <div class="profile-card">
+        <div class="profile-left">
+          <div class="avatar-container">
+            <img
+              id="profileAvatar"
+              src="avt/avt.jpg"
+              onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'"
+              alt="Avatar"
+            />
+          </div>
+          <h1 class="profile-name" id="profileName">Loading...</h1>
+          <span class="profile-role" id="profileRole">Loading...</span>
 
-    <div class="container">
-      <div class="filter-container">
+          <div class="contact-grid">
+            <div class="contact-item">
+              <span>Email</span> <span id="profileEmail">...</span>
+            </div>
+            <div class="contact-item">
+              <span>Phone</span> <span id="profilePhone">...</span>
+            </div>
+            <div class="contact-item">
+              <span>Loc</span> <span id="profileAddress">...</span>
+            </div>
+            <div class="contact-item">
+              <span>Social</span> <span id="profileSocial">...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-right">
+          <div class="bio-section">
+            <h3>Skills</h3>
+            <div class="skills-container" id="skillsContainer"></div>
+          </div>
+
+          <div class="grid-2-col">
+            <div class="bio-section">
+              <h3>Experience</h3>
+              <div id="experienceContainer"></div>
+            </div>
+            <div class="bio-section">
+              <h3>Education</h3>
+              <div id="educationContainer"></div>
+            </div>
+          </div>
+
+          <div class="bio-section" style="margin-top: 1rem">
+            <h3>Awards</h3>
+            <div
+              id="awardsContainer"
+              style="font-size: 0.9rem; color: #555"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-spacer container">
+      <div style="text-align: center; margin-bottom: 3rem">
+        <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem">Selected Works</h2>
+        <p>A collection of my latest projects and designs</p>
+      </div>
+
+      <div class="portfolio-controls">
         <button class="filter-btn active" onclick="filterProjects('all', this)">
-          All Works
+          All
         </button>
         <button class="filter-btn" onclick="filterProjects('web', this)">
           Web Dev
         </button>
         <button class="filter-btn" onclick="filterProjects('design', this)">
-          UI/UX Design
+          Interior / UI
         </button>
         <button class="filter-btn" onclick="filterProjects('photo', this)">
           Photography
         </button>
       </div>
 
-      <div class="portfolio-grid" id="portfolioGrid">
-        <div class="loading-message">Loading projects...</div>
-      </div>
-    </div>
+      <div class="gallery-grid" id="portfolioGrid"></div>
+    </section>
 
-    <!-- CONTACT SECTION -->
-
-    <!-- MODAL -->
     <div id="projectModal" class="modal">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <span class="close-modal" onclick="closeModal()">&times;</span>
       <div class="modal-content">
-        <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
-        <img id="modalImage" class="slider-image" />
-        <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
-      </div>
-      <div class="caption-container">
-        <h3 id="modalTitle"></h3>
-        <p id="modalCounter" style="color: #666; font-size: 0.8rem"></p>
+        <div class="nav-arrow nav-prev" onclick="changeSlide(-1)">&#10094;</div>
+        <img id="modalImage" class="modal-img" src="" />
+        <div class="nav-arrow nav-next" onclick="changeSlide(1)">&#10095;</div>
+        <h3 id="modalTitle" style="margin-top: 1rem; color: #333"></h3>
+        <p id="modalCounter" style="color: #888; font-size: 0.9rem"></p>
       </div>
     </div>
 
     <script>
-      /* ============================================
-         📁 PROJECT CONFIGURATION
-         Add your projects with their categories here!
-         Categories: 'web', 'design', 'photo'
-         ============================================ */
-      const PROJECT_FOLDERS = [
-        { folder: "krusian", category: "web" },
-        { folder: "cafe5050", category: "photo" },
-        { folder: "Brand Design", category: "design" },
-        // Add more projects here
+      /* ================= DATA CONFIGURATION ================= */
+
+      const PROFILE = {
+        name: "Alex Doe",
+        role: "Full Stack & Designer",
+        email: "alex@example.com",
+        phone: "+84 999 888 777",
+        address: "Can Tho, VN",
+        social: "@alexdesign", // Short version for display
+
+        skills: [
+          { name: "SketchUp", level: 90 },
+          { name: "Enscape", level: 85 },
+          { name: "ReactJS", level: 75 },
+          { name: "Photoshop", level: 60 },
+          { name: "Figma", level: 80 },
+        ],
+
+        experience: [
+          {
+            role: "Interior Designer",
+            company: "Phong Cach Moc",
+            dates: "2022 - 2023",
+          },
+          {
+            role: "Freelance Dev",
+            company: "Self-Employed",
+            dates: "2023 - Present",
+          },
+        ],
+
+        education: [
+          {
+            degree: "Bachelor of Design",
+            school: "Van Lang Uni",
+            dates: "2018 - 2022",
+          },
+        ],
+
+        awards: [
+          "Valedictorian Graduate Project (2022)",
+          "3rd Prize FFD Exhibition (2021)",
+        ],
+      };
+
+      // FOLDER NAMES MATCHING YOUR COMPUTER
+      const PROJECTS = [
+        {
+          folder: "krusian",
+          title: "Krusian Web",
+          category: "web",
+          description:
+            "A responsive e-commerce platform designed for modern retail experiences.",
+        },
+        {
+          folder: "cafe5050",
+          title: "cafe 50/50",
+          category: "photo",
+          description:
+            "A street photography series capturing the neon soul of Shinjuku.",
+        },
+        {
+          folder: "Brand Design",
+          title: "Modern Branding",
+          category: "design",
+          description:
+            "Corporate identity and stationary design for a minimalist tech startup.",
+        },
+        {
+          folder: "Interior Setup",
+          title: "Office Interior",
+          category: "design",
+          description:
+            "Industrial style workspace optimization and 3D visualization.",
+        },
       ];
 
-      let projects = {};
+      /* ================= LOGIC ================= */
 
-      /* --- INITIALIZE PROJECTS FROM FOLDER NAMES --- */
-      function initializeProjects() {
-        const grid = document.getElementById("portfolioGrid");
+      function initProfile() {
+        document.getElementById("profileName").textContent = PROFILE.name;
+        document.getElementById("profileRole").textContent = PROFILE.role;
+        document.getElementById("profileEmail").textContent = PROFILE.email;
+        document.getElementById("profilePhone").textContent = PROFILE.phone;
+        document.getElementById("profileAddress").textContent = PROFILE.address;
+        document.getElementById("profileSocial").textContent = PROFILE.social;
 
-        if (PROJECT_FOLDERS.length === 0) {
-          grid.innerHTML =
-            '<div class="loading-message">Please add your project folder names to PROJECT_FOLDERS array in the script.</div>';
-          return;
-        }
-
-        grid.innerHTML =
-          '<div class="loading-message">Loading projects...</div>';
-
-        PROJECT_FOLDERS.forEach((project) => {
-          const folderName = project.folder;
-          const category = project.category || "web"; // default to 'web' if not specified
-
-          projects[folderName] = {
-            title: folderName,
-            folder: folderName,
-            category: category,
-            description: `${folderName} Portfolio`,
-          };
+        // Render Skills
+        const skillsContainer = document.getElementById("skillsContainer");
+        PROFILE.skills.forEach((s) => {
+          const pill = document.createElement("div");
+          pill.className = "skill-pill";
+          // Opacity based on level, but kept subtle
+          pill.innerHTML = `<span class="skill-dot" style="opacity: ${
+            s.level / 100
+          }"></span> ${s.name}`;
+          skillsContainer.appendChild(pill);
         });
 
-        grid.innerHTML = "";
-        loadProjects();
+        // Render Exp
+        const expContainer = document.getElementById("experienceContainer");
+        PROFILE.experience.forEach((e) => {
+          expContainer.innerHTML += `
+                <div class="timeline-item">
+                    <span class="t-title">${e.role}</span>
+                    <span class="t-place">${e.company}</span>
+                    <span class="t-date">${e.dates}</span>
+                </div>`;
+        });
+
+        // Render Edu
+        const eduContainer = document.getElementById("educationContainer");
+        PROFILE.education.forEach((e) => {
+          eduContainer.innerHTML += `
+                <div class="timeline-item">
+                    <span class="t-title">${e.degree}</span>
+                    <span class="t-place">${e.school}</span>
+                    <span class="t-date">${e.dates}</span>
+                </div>`;
+        });
+
+        // Render Awards
+        document.getElementById("awardsContainer").innerHTML = PROFILE.awards
+          .map((a) => `<div>• ${a}</div>`)
+          .join("");
       }
 
-      /* --- AUTO-DETECT CATEGORY FROM FOLDER NAME --- */
-      function detectCategory(folderName) {
-        const lower = folderName.toLowerCase();
-
-        if (
-          lower.includes("web") ||
-          lower.includes("dashboard") ||
-          lower.includes("app") ||
-          lower.includes("ecommerce") ||
-          lower.includes("e-commerce")
-        ) {
-          return "web";
-        } else if (
-          lower.includes("design") ||
-          lower.includes("ui") ||
-          lower.includes("ux") ||
-          lower.includes("brand") ||
-          lower.includes("identity")
-        ) {
-          return "design";
-        } else if (
-          lower.includes("photo") ||
-          lower.includes("photography") ||
-          lower.includes("street") ||
-          lower.includes("portrait")
-        ) {
-          return "photo";
-        }
-
-        return "web"; // default category
-      }
-
-      /* --- LOAD PROJECTS DYNAMICALLY --- */
-      function loadProjects() {
+      function initProjects() {
         const grid = document.getElementById("portfolioGrid");
+        grid.innerHTML = "";
 
-        for (const [folderName, project] of Object.entries(projects)) {
-          const coverPath = `${project.folder}/cover.jpg`;
-
+        PROJECTS.forEach((proj) => {
           const card = document.createElement("div");
           card.className = "project-card";
-          card.setAttribute("data-category", project.category);
-          card.onclick = () => openModal(folderName);
+          card.dataset.category = proj.category;
+          card.onclick = () => openModal(proj);
+
+          // Using placeholder for error handling
+          const imgSrc = `${proj.folder}/cover.jpg`;
 
           card.innerHTML = `
-            <div class="category-badge">${getCategoryLabel(
-              project.category
-            )}</div>
-            <img src="${coverPath}" alt="${
-            project.title
-          }" onerror="handleImageError(this)" />
-            <div class="card-overlay">
-              <h3>${project.title}</h3>
-              <p>${project.description}</p>
-            </div>
-          `;
-
+                <img src="${imgSrc}" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80'" alt="${proj.title}">
+                <div class="project-overlay">
+                    <span class="project-category">${proj.category}</span>
+                    <h3 class="project-title">${proj.title}</h3>
+                    <p class="project-desc">${proj.description}</p>
+                </div>
+            `;
           grid.appendChild(card);
-        }
+        });
       }
 
-      function handleImageError(img) {
-        console.error("Failed to load:", img.src);
-        img.src =
-          "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80";
-      }
-
-      function getCategoryLabel(category) {
-        const labels = {
-          web: "Web Dev",
-          design: "UI/UX",
-          photo: "Photo",
-        };
-        return labels[category] || category.toUpperCase();
-      }
-
-      /* --- FILTER --- */
-      function filterProjects(category, btn) {
-        const cards = document.querySelectorAll(".project-card");
-        const buttons = document.querySelectorAll(".filter-btn");
-
-        buttons.forEach((b) => b.classList.remove("active"));
+      function filterProjects(cat, btn) {
+        // Button Styles
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
 
+        // Logic
+        const cards = document.querySelectorAll(".project-card");
         cards.forEach((card) => {
-          const cardCategory = card.getAttribute("data-category");
-          if (category === "all" || cardCategory === category) {
+          if (cat === "all" || card.dataset.category === cat) {
             card.style.display = "block";
-            card.style.animation = "none";
-            card.offsetHeight;
-            card.style.animation = "fadeIn 0.5s ease forwards";
+            setTimeout(() => (card.style.opacity = "1"), 50); // Simple fade
           } else {
             card.style.display = "none";
+            card.style.opacity = "0";
           }
         });
       }
 
-      /* --- MODAL LOGIC --- */
-      let currentProjectKey = "";
-      let currentImageIndex = 0;
+      /* --- MODAL LOGIC (Simplified) --- */
       let currentImages = [];
-
+      let currentIndex = 0;
       const modal = document.getElementById("projectModal");
       const modalImg = document.getElementById("modalImage");
-      const modalTitle = document.getElementById("modalTitle");
-      const modalCounter = document.getElementById("modalCounter");
 
-      async function openModal(projectKey) {
-        currentProjectKey = projectKey;
-        currentImageIndex = 0;
-
-        const project = projects[projectKey];
-        currentImages = await loadProjectImages(project.folder);
-
-        updateModalContent();
+      async function openModal(project) {
         modal.style.display = "flex";
-      }
+        document.getElementById("modalTitle").textContent = project.title;
 
-      async function loadProjectImages(folder) {
-        const images = [];
-
-        // Try to load numbered images (1.jpg through 50.jpg)
-        for (let i = 1; i <= 50; i++) {
-          const imagePath = `${folder}/${i}.jpg`;
-          images.push(imagePath);
+        // Attempt to load numbered images 1.jpg to 20.jpg
+        currentImages = [];
+        for (let i = 1; i <= 20; i++) {
+          currentImages.push(`${project.folder}/${i}.jpg`);
         }
 
-        return images;
+        currentIndex = 0;
+        updateModalImage();
+      }
+
+      function updateModalImage() {
+        modalImg.style.opacity = 0.5;
+        modalImg.src = currentImages[currentIndex];
+
+        // If image fails (doesn't exist), try to skip or show placeholder
+        modalImg.onerror = function () {
+          // In a real scenario, you'd check file existence.
+          // Here, we just show a placeholder if the specific numbered file isn't found
+          this.src =
+            "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80";
+        };
+
+        setTimeout(() => (modalImg.style.opacity = 1), 200);
+        document.getElementById("modalCounter").textContent = `${
+          currentIndex + 1
+        } / ${currentImages.length} (Estimated)`;
+      }
+
+      function changeSlide(dir) {
+        currentIndex += dir;
+        if (currentIndex < 0) currentIndex = currentImages.length - 1;
+        if (currentIndex >= currentImages.length) currentIndex = 0;
+        updateModalImage();
       }
 
       function closeModal() {
         modal.style.display = "none";
       }
 
-      function changeSlide(direction) {
-        currentImageIndex += direction;
-
-        if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
-        if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
-
-        updateModalContent();
-      }
-
-      function updateModalContent() {
-        const project = projects[currentProjectKey];
-        modalImg.style.opacity = 0;
-
-        setTimeout(() => {
-          modalImg.src = currentImages[currentImageIndex];
-          modalImg.onerror = function () {
-            this.src =
-              "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200";
-          };
-          modalImg.style.opacity = 1;
-        }, 200);
-
-        modalTitle.innerText = project.title;
-        modalCounter.innerText =
-          currentImageIndex + 1 + " / " + currentImages.length;
-      }
-
-      window.onclick = function (e) {
-        if (e.target === modal) closeModal();
+      // Init
+      window.onload = () => {
+        initProfile();
+        initProjects();
       };
 
-      document.addEventListener("keydown", function (e) {
-        if (modal.style.display === "flex") {
-          if (e.key === "ArrowLeft") changeSlide(-1);
-          if (e.key === "ArrowRight") changeSlide(1);
-          if (e.key === "Escape") closeModal();
-        }
-      });
-
-      // Initialize projects on page load
-      window.addEventListener("DOMContentLoaded", initializeProjects);
+      // Close modal on outside click
+      window.onclick = (e) => {
+        if (e.target == modal) closeModal();
+      };
     </script>
   </body>
 </html>
